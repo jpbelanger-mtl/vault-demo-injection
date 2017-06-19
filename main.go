@@ -10,21 +10,28 @@ import (
 func main() {
 	env := os.Environ()
 
-	log.Printf("Injected DEMO* env variables: ")
+	println("Injected DEMO* env variables: ")
 	for _, v := range env {
 		if strings.HasPrefix(v, "DEMO") {
-			log.Printf("\t%s", v)
+			println("\t", v)
 		}
 	}
 
-	log.Print("")
-	log.Printf("Injected files:")
-	files, err := ioutil.ReadDir("/injected")
+	println("")
+	println("Injected files in /tmp/*.yaml:")
+	files, err := ioutil.ReadDir("/tmp")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range files {
-		log.Printf("\t%s", file.Name())
+		if strings.HasSuffix(file.Name(), "yaml") {
+			println("--- ", file.Name())
+			content, err := ioutil.ReadFile("/tmp/" + file.Name())
+			if err != nil {
+				log.Print("error reading file")
+			}
+			println("", string(content), "")
+		}
 	}
 }
