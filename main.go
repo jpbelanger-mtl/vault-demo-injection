@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -34,4 +35,13 @@ func main() {
 			println("", string(content), "")
 		}
 	}
+
+	println("Listening to /shutdown call")
+	http.HandleFunc("/shutdown", handler)
+	http.ListenAndServe(":8080", nil)
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	println("Shutting down the container")
+	os.Exit(0)
 }
